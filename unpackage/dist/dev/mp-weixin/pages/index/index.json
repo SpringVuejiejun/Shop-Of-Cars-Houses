@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "豪车豪宅交易平台",
+  "usingComponents": {
+    "search": "../../components/Search"
+  }
+}

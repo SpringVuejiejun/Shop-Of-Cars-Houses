@@ -1,0 +1,61 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/menu/menu",
+    "pages/order/order",
+    "pages/user/user",
+    "pages/detail/detail",
+    "pages/bargain/bargain",
+    "pages/games/games",
+    "pages/user/assets",
+    "pages/address/address",
+    "pages/service/service",
+    "pages/settings/settings",
+    "pages/coupon/coupon"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "豪车豪宅交易平台",
+    "navigationBarBackgroundColor": "#000000",
+    "backgroundColor": "#121212"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "000000",
+    "backgroundColor": "#f0f0f0",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tabs/home.png",
+        "selectedIconPath": "static/tabs/home-active.png"
+      },
+      {
+        "pagePath": "pages/menu/menu",
+        "text": "商品",
+        "iconPath": "static/tabs/menu.png",
+        "selectedIconPath": "static/tabs/menu-active.png"
+      },
+      {
+        "pagePath": "pages/games/games",
+        "text": "游戏",
+        "iconPath": "static/tabs/game.png",
+        "selectedIconPath": "static/tabs/game-active.png"
+      },
+      {
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "static/tabs/order.png",
+        "selectedIconPath": "static/tabs/order-active.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "我的",
+        "iconPath": "static/tabs/user.png",
+        "selectedIconPath": "static/tabs/user-active.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

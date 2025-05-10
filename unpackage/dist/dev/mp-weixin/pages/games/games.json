@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "幸运转盘",
+  "usingComponents": {
+    "uni-popup": "../../node-modules/@dcloudio/uni-ui/lib/uni-popup/uni-popup"
+  }
+}
