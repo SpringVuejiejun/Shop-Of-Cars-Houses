@@ -32,6 +32,11 @@ const _sfc_main = {
       ],
       categories: [
         {
+          id: "luxury",
+          name: "奢侈品",
+          icon: "iconfont icon-luxury"
+        },
+        {
           id: "car",
           name: "豪车",
           icon: "iconfont icon-car"
@@ -40,11 +45,6 @@ const _sfc_main = {
           id: "house",
           name: "豪宅",
           icon: "iconfont icon-house"
-        },
-        {
-          id: "luxury",
-          name: "奢侈品",
-          icon: "iconfont icon-luxury"
         },
         {
           id: "game",
@@ -80,9 +80,16 @@ const _sfc_main = {
       }
     },
     goToMenu(categoryId) {
-      common_vendor.index.switchTab({
-        url: "/pages/menu/menu?category=" + categoryId
-      });
+      if (categoryId === "game") {
+        common_vendor.index.switchTab({
+          url: "/pages/games/games"
+        });
+      } else {
+        common_vendor.index.setStorageSync("menuCategory", categoryId);
+        common_vendor.index.switchTab({
+          url: "/pages/menu/menu"
+        });
+      }
     },
     goToDetail(productId) {
       common_vendor.index.navigateTo({
@@ -111,8 +118,8 @@ const _sfc_main = {
       this.showSuggestions = !!val && this.suggestions.length > 0;
     },
     selectSuggestion(item) {
+      this.inputValue = item.name;
       this.showSuggestions = false;
-      this.handleSelect(item);
     }
   }
 };
@@ -124,13 +131,12 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
     a: common_vendor.o($options.onInput),
     b: common_vendor.o($options.handleSearch),
-    c: common_vendor.o($options.handleSelect),
-    d: common_vendor.p({
+    c: common_vendor.p({
       suggestions: $data.suggestions
     }),
-    e: $data.showSuggestions
+    d: $data.showSuggestions
   }, $data.showSuggestions ? {
-    f: common_vendor.f($data.suggestions, (item, k0, i0) => {
+    e: common_vendor.f($data.suggestions, (item, k0, i0) => {
       return {
         a: common_vendor.t(item.name),
         b: item.id,
@@ -138,20 +144,20 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     })
   } : {}, {
-    g: common_assets._imports_0,
-    h: common_vendor.o((...args) => $options.prevBanner && $options.prevBanner(...args)),
-    i: common_vendor.f($data.banners, (item, index, i0) => {
+    f: common_assets._imports_0,
+    g: common_vendor.o((...args) => $options.prevBanner && $options.prevBanner(...args)),
+    h: common_vendor.f($data.banners, (item, index, i0) => {
       return {
         a: item.image,
         b: index
       };
     }),
-    j: $data.current,
-    k: common_vendor.o((...args) => $options.onBannerChange && $options.onBannerChange(...args)),
-    l: $data.autoplay,
-    m: common_assets._imports_1,
-    n: common_vendor.o((...args) => $options.nextBanner && $options.nextBanner(...args)),
-    o: common_vendor.f($data.categories, (item, index, i0) => {
+    i: $data.current,
+    j: common_vendor.o((...args) => $options.onBannerChange && $options.onBannerChange(...args)),
+    k: $data.autoplay,
+    l: common_assets._imports_1,
+    m: common_vendor.o((...args) => $options.nextBanner && $options.nextBanner(...args)),
+    n: common_vendor.f($data.categories, (item, index, i0) => {
       return {
         a: common_vendor.n(item.icon),
         b: common_vendor.t(item.name),
@@ -159,8 +165,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.o(($event) => $options.goToMenu(item.id), index)
       };
     }),
-    p: common_vendor.o(($event) => $options.goToMenu("hot")),
-    q: common_vendor.f($data.hotProducts, (item, index, i0) => {
+    o: common_vendor.o(($event) => $options.goToMenu("hot")),
+    p: common_vendor.f($data.hotProducts, (item, index, i0) => {
       return {
         a: item.images[0],
         b: common_vendor.t(item.name),

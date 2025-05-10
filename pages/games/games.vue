@@ -88,22 +88,22 @@
 						id: 1,
 						name: '￥500000元',
 						type: 'cash',
-						value: 5000000,
-						probability: 0.1
+						value: 500000,
+						probability: 0.15
 					},
 					{
 						id: 2,
 						name: '迈巴赫S级',
 						type: 'car',
 						value: 1500000,
-						probability: 0.1
+						probability: 0.05
 					},
 					{
 						id: 3,
 						name: '10万优惠券',
 						type: 'coupon',
 						value: 100000,
-						probability: 0.1
+						probability: 0.2
 					},
 					{
 						id: 4,
@@ -117,14 +117,14 @@
 						name: '￥1000000元',
 						type: 'cash',
 						value: 1000000,
-						probability: 0.2
+						probability: 0.03
 					},
 					{
 						id: 6,
 						name: '五菱宏光',
 						type: 'car',
 						value: 5000,
-						probability: 0.13
+						probability: 0.1
 					},
 					{
 						id: 7,
@@ -138,7 +138,7 @@
 						name: '杭州西湖壹号',
 						type: 'house',
 						value: 9000000,
-						probability: 0.05
+						probability: 0.02
 					}
 				],
 				gameRules: [

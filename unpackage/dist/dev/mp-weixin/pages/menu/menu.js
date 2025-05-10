@@ -2,12 +2,14 @@
 const common_vendor = require("../../common/vendor.js");
 const utils_products = require("../../utils/products.js");
 const utils_user = require("../../utils/user.js");
+const Search = () => "../../components/Search.js";
 const _sfc_main = {
+  components: { Search },
   data() {
     return {
       categories: [
         {
-          id: "all",
+          id: "luxury",
           name: "全部"
         },
         {
@@ -19,9 +21,10 @@ const _sfc_main = {
           name: "豪宅"
         }
       ],
-      currentCategory: "all",
+      currentCategory: "luxury",
       products: [],
-      userBalance: 0
+      userBalance: 0,
+      suggestions: []
     };
   },
   onLoad(options) {
@@ -30,6 +33,14 @@ const _sfc_main = {
     }
     this.loadProducts();
     this.userBalance = utils_user.userData.getUserInfo().balance / 1e4;
+  },
+  onShow() {
+    const category = common_vendor.index.getStorageSync("menuCategory");
+    if (category) {
+      this.currentCategory = category;
+      this.loadProducts();
+      common_vendor.index.removeStorageSync("menuCategory");
+    }
   },
   methods: {
     switchCategory(category) {
@@ -43,12 +54,27 @@ const _sfc_main = {
       common_vendor.index.navigateTo({
         url: "/pages/detail/detail?id=" + productId
       });
+    },
+    // 搜索組件相關
+    onInput(val) {
+      this.suggestions = utils_products.products.getSuggestions ? utils_products.products.getSuggestions(val) : [];
+    },
+    handleSearch(keyword) {
     }
   }
 };
+if (!Array) {
+  const _component_Search = common_vendor.resolveComponent("Search");
+  _component_Search();
+}
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.f($data.categories, (item, index, i0) => {
+    a: common_vendor.o($options.onInput),
+    b: common_vendor.o($options.handleSearch),
+    c: common_vendor.p({
+      suggestions: $data.suggestions
+    }),
+    d: common_vendor.f($data.categories, (item, index, i0) => {
       return {
         a: common_vendor.t(item.name),
         b: index,
@@ -56,7 +82,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.o(($event) => $options.switchCategory(item.id), index)
       };
     }),
-    b: common_vendor.f($data.products, (item, index, i0) => {
+    e: common_vendor.f($data.products, (item, index, i0) => {
       return common_vendor.e({
         a: item.images[0],
         b: common_vendor.o(($event) => $options.goToDetail(item.id), index),

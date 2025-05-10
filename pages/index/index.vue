@@ -5,8 +5,9 @@
 			:suggestions="suggestions"
 			@input="onInput"
 			@search="handleSearch"
-			@select="handleSelect"
 		/>
+		<!-- @select="handleSelect" 点击联想词跳转-->
+
 		<view v-if="showSuggestions" class="suggestion-list">
 			<view class="suggestion-item" v-for="item in suggestions" :key="item.id" @tap="selectSuggestion(item)">
 				{{item.name}}
@@ -88,6 +89,11 @@
 				],
 				categories: [
 					{
+						id: 'luxury',
+						name: '奢侈品',
+						icon: 'iconfont icon-luxury'
+					},
+					{
 						id: 'car',
 						name: '豪车',
 						icon: 'iconfont icon-car'
@@ -96,11 +102,6 @@
 						id: 'house',
 						name: '豪宅',
 						icon: 'iconfont icon-house'
-					},
-					{
-						id: 'luxury',
-						name: '奢侈品',
-						icon: 'iconfont icon-luxury'
 					},
 					{
 						id: 'game',
@@ -136,9 +137,16 @@
 				}
 			},
 			goToMenu(categoryId) {
-				uni.switchTab({
-					url: '/pages/menu/menu?category=' + categoryId
-				})
+				if(categoryId === 'game'){
+					uni.switchTab({
+						url: '/pages/games/games'
+					})
+				}  else {
+					uni.setStorageSync('menuCategory', categoryId)
+					uni.switchTab({
+						url: '/pages/menu/menu'
+					})
+				}
 			},
 			goToDetail(productId) {
 				// console.log('跳轉到詳情頁，商品ID：', productId)
@@ -170,8 +178,8 @@
 				this.showSuggestions = !!val && this.suggestions.length > 0
 			},
 			selectSuggestion(item) {
+				this.inputValue = item.name
 				this.showSuggestions = false
-				this.handleSelect(item)
 			}
 		}
 	}

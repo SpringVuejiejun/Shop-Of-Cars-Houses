@@ -348,7 +348,7 @@ const products = {
   },
   // 根据类别获取商品
   getProductsByCategory(category) {
-    if (category === "all") {
+    if (category === "luxury") {
       return this.productList;
     }
     return this.productList.filter((product) => product.type === category);

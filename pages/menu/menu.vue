@@ -1,9 +1,11 @@
 <template>
 	<view class="container">
 		<!-- 搜索栏 -->
-		<view class="search-box">
-			<input type="text" placeholder="搜索豪车/豪宅" class="search-input" />
-		</view>
+		<Search
+			:suggestions="suggestions"
+			@input="onInput"
+			@search="handleSearch"
+		/>
 		
 		<!-- 分类标签 -->
 		<view class="category-tabs">
@@ -31,15 +33,17 @@
 </template>
 
 <script>
+	import Search from '@/components/Search.vue'
 	import products from '@/utils/products.js'
 	import userData from '@/utils/user.js'
 	
 	export default {
+		components: { Search },
 		data() {
 			return {
 				categories: [
 					{
-						id: 'all',
+						id: 'luxury',
 						name: '全部'
 					},
 					{
@@ -51,9 +55,10 @@
 						name: '豪宅'
 					}
 				],
-				currentCategory: 'all',
+				currentCategory: 'luxury',
 				products: [],
-				userBalance: 0
+				userBalance: 0,
+				suggestions: []
 			}
 		},
 		onLoad(options) {
@@ -62,6 +67,14 @@
 			}
 			this.loadProducts()
 			this.userBalance = userData.getUserInfo().balance/10000
+		},
+		onShow() {
+			const category = uni.getStorageSync('menuCategory')
+			if (category) {
+				this.currentCategory = category
+				this.loadProducts()
+				uni.removeStorageSync('menuCategory')
+			}
 		},
 		methods: {
 			switchCategory(category) {
@@ -75,6 +88,14 @@
 				uni.navigateTo({
 					url: '/pages/detail/detail?id=' + productId
 				})
+			},
+			// 搜索組件相關
+			onInput(val) {
+				this.suggestions = products.getSuggestions ? products.getSuggestions(val) : []
+			},
+			handleSearch(keyword) {
+				// 這裡可根據 keyword 做跳轉或其他操作
+				// 目前僅彈窗展示由 Search 組件控制
 			}
 		}
 	}

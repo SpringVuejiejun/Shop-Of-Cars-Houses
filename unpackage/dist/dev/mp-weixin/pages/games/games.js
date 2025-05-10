@@ -9,22 +9,22 @@ const _sfc_main = {
           id: 1,
           name: "￥500000元",
           type: "cash",
-          value: 5e6,
-          probability: 0.1
+          value: 5e5,
+          probability: 0.15
         },
         {
           id: 2,
           name: "迈巴赫S级",
           type: "car",
           value: 15e5,
-          probability: 0.1
+          probability: 0.05
         },
         {
           id: 3,
           name: "10万优惠券",
           type: "coupon",
           value: 1e5,
-          probability: 0.1
+          probability: 0.2
         },
         {
           id: 4,
@@ -38,14 +38,14 @@ const _sfc_main = {
           name: "￥1000000元",
           type: "cash",
           value: 1e6,
-          probability: 0.2
+          probability: 0.03
         },
         {
           id: 6,
           name: "五菱宏光",
           type: "car",
           value: 5e3,
-          probability: 0.13
+          probability: 0.1
         },
         {
           id: 7,
@@ -59,7 +59,7 @@ const _sfc_main = {
           name: "杭州西湖壹号",
           type: "house",
           value: 9e6,
-          probability: 0.05
+          probability: 0.02
         }
       ],
       gameRules: [
