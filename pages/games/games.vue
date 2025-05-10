@@ -399,7 +399,7 @@
 	.prize-name {
 		position: relative;
 		transform: rotate(45deg);
-		font-size: 26rpx;
+		font-size: 35rpx;
 		color: #FFFFFF;
 		text-align: center;
 		margin-bottom: 6rpx;
