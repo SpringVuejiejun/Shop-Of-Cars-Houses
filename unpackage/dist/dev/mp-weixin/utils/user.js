@@ -1,11 +1,10 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
-common_vendor.index.clearStorageSync();
 const userData = {
   // 用户信息
   userInfo: {
-    balance: 1e8,
-    // 初始余额30万
+    balance: 168e4,
+    // 初始余额168万
     lastSignIn: null,
     // 上次签到时间
     orders: [],

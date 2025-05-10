@@ -12,12 +12,10 @@
 				<view class="prize-item" v-for="(prize, index) in prizes" :key="prize.id" 
 					:style="{ 
 						transform: `rotate(${index * 45}deg)`,
-						'background-color': getPrizeColor(prize.type)
+						'background-color': getPrizeColor(index)
 					}">
 					<view class="prize-content">
-						<image class="prize-icon" :src="getPrizeIcon(prize.type)" mode="aspectFit"></image>
 						<text class="prize-name">{{prize.name}}</text>
-						<text class="prize-value" v-if="prize.type === 'cash'">¥{{prize.value/10000}}万</text>
 					</view>
 				</view>
 			</view>
@@ -88,7 +86,7 @@
 				prizes: [
 					{
 						id: 1,
-						name: '现金红包',
+						name: '￥500000元',
 						type: 'cash',
 						value: 5000000,
 						probability: 0.1
@@ -116,7 +114,7 @@
 					},
 					{
 						id: 5,
-						name: '现金红包',
+						name: '￥1000000元',
 						type: 'cash',
 						value: 1000000,
 						probability: 0.2
@@ -126,21 +124,21 @@
 						name: '五菱宏光',
 						type: 'car',
 						value: 5000,
-						probability: 0.2
+						probability: 0.13
 					},
 					{
 						id: 7,
 						name: '5万优惠券',
 						type: 'coupon',
 						value: 50000,
-						probability: 0.1
+						probability: 0.15
 					},
 					{
 						id: 8,
-						name: '百万豪宅',
+						name: '杭州西湖壹号',
 						type: 'house',
-						value: 1000000,
-						probability: 0.1
+						value: 9000000,
+						probability: 0.05
 					}
 				],
 				gameRules: [
@@ -156,7 +154,11 @@
 				gameRecords: [],
 				rotateDeg: 0,
 				todayPrizes: 0,
-				lastRefreshTime: null
+				lastRefreshTime: null,
+				colorMap: [
+					'#EAD7C2', '#BCA37F', '#A1CCD1', '#E9B384',
+					'#7C9D96', '#F4A259', '#8CB9BD', '#C7B198'
+				]
 			}
 		},
 		onShow() {
@@ -183,40 +185,39 @@
 			startGame() {
 				if (this.isRotating || this.gameTimes <= 0) return
 
-				// 先扣除游戏次数
 				this.gameTimes = this.gameTimes - 1
 				userData.updateGameTimes(this.gameTimes)
-				
 				this.isRotating = true
 
-				// 计算新的旋转角度：当前角度 + 随机圈数(5-10圈)
-				const extraDeg = Math.ceil(Math.random() * 1800) + 1800 // 5-10圈之间的随机角度
-				const targetDeg = this.rotateDeg + extraDeg
-				
-				// 添加音效
+				// 随机生成中奖索引
+				const prizeIndex = Math.floor(Math.random() * this.prizes.length)
+				const anglePerPrize = 360 / this.prizes.length
+
+				// 计算目标角度（指针最终要指向 prizeIndex）
+				const currentDeg = this.rotateDeg % 360
+				const targetDeg = 360 * 5 + (this.prizes.length - prizeIndex) * anglePerPrize + 45
+				const newRotateDeg = this.rotateDeg + (360 * 5 - (currentDeg - prizeIndex * anglePerPrize - 45 + 360) % 360)
+
 				this.playSound('start')
-				
-				// 重置指针动画状态
-				this.isRotating = false
+
 				setTimeout(() => {
 					this.isRotating = true
-					this.rotateDeg = targetDeg
-					
+					this.rotateDeg = newRotateDeg
+
 					setTimeout(() => {
 						this.isRotating = false
-						// 在转盘停止时计算指针指向的奖品
-						const currentDeg = this.rotateDeg % 360
-						const pointerDeg = (currentDeg + 225) % 360
-						const prizeIndex = Math.floor(pointerDeg / 45)
-						const prize = this.prizes[prizeIndex]
-						
+
+						// 动画结束后，反推 prizeIndex
+						const finalDeg = this.rotateDeg % 360
+						let realIndex = Math.round(((360 - (finalDeg - 45) % 360) % 360) / anglePerPrize) % this.prizes.length
+						const prize = this.prizes[realIndex]
+
 						this.handlePrizeResult(prize)
 						this.playSound('end')
 					}, 5000)
 				}, 50)
 			},
 			playSound(type) {
-				// 这里可以添加音效播放逻辑
 				console.log(`Playing ${type} sound`)
 			},
 			selectPrize() {
@@ -234,7 +235,7 @@
 				let message = ''
 				switch(prize.type) {
 					case 'cash':
-						message = `恭喜您获得${prize.name}！奖金将直接转入您的账户。`
+						message = `恭喜您获得现金${prize.value/10000}万！奖金将直接转入您的账户。`
 						userData.updateBalance(prize.value)
 						break
 					case 'house':
@@ -255,7 +256,6 @@
 						break
 				}
 				
-				// 添加游戏记录
 				const gameRecord = {
 					id: 'G' + Date.now(),
 					time: new Date().toISOString(),
@@ -264,14 +264,12 @@
 				}
 				userData.addGameRecord(gameRecord)
 				
-				// 显示中奖信息
 				uni.showToast({
 					title: message,
 					icon: 'none',
 					duration: 3000
 				})
 				
-				// 刷新游戏数据
 				this.loadGameData()
 			},
 			showRules() {
@@ -312,14 +310,8 @@
 				}
 				return iconMap[type] || ''
 			},
-			getPrizeColor(type) {
-				const colorMap = {
-					'cash': '#FF4D4F',
-					'house': '#FF4D4F',
-					'car': '#FF4D4F',
-					'coupon': '#FF4D4F'
-				}
-				return colorMap[type] || '#FF4D4F'
+			getPrizeColor(index) {
+				return this.colorMap[index % this.colorMap.length]
 			}
 		}
 	}
@@ -390,7 +382,6 @@
 		width: 100%;
 		height: 100%;
 		display: flex;
-		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		transform-origin: center;
@@ -412,7 +403,7 @@
 		color: #FFFFFF;
 		text-align: center;
 		margin-bottom: 6rpx;
-		line-height: 1.3;
+		line-height: 1.5;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;

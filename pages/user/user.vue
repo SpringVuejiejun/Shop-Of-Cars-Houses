@@ -76,8 +76,8 @@
 					</view>
 					<view class="price-info">
 						<view class="price-row">
-							<text class="price" v-if="item.price > 0">¥{{item.price}}万</text>
-							<text class="type-tag" v-if="item.type === 'game'">游戏奖品</text>
+						<text class="price" v-if="item.price > 0">¥{{item.price}}万</text>
+						<text class="type-tag" v-if="item.type === 'game'">游戏奖品</text>
 						</view>
 						<text class="status" :class="item.status === '已完成' ? 'completed' : item.status">{{item.status}}</text>
 					</view>

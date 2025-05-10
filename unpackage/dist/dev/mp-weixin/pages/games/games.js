@@ -7,7 +7,7 @@ const _sfc_main = {
       prizes: [
         {
           id: 1,
-          name: "现金红包",
+          name: "￥500000元",
           type: "cash",
           value: 5e6,
           probability: 0.1
@@ -35,7 +35,7 @@ const _sfc_main = {
         },
         {
           id: 5,
-          name: "现金红包",
+          name: "￥1000000元",
           type: "cash",
           value: 1e6,
           probability: 0.2
@@ -45,21 +45,21 @@ const _sfc_main = {
           name: "五菱宏光",
           type: "car",
           value: 5e3,
-          probability: 0.2
+          probability: 0.13
         },
         {
           id: 7,
           name: "5万优惠券",
           type: "coupon",
           value: 5e4,
-          probability: 0.1
+          probability: 0.15
         },
         {
           id: 8,
-          name: "百万豪宅",
+          name: "杭州西湖壹号",
           type: "house",
-          value: 1e6,
-          probability: 0.1
+          value: 9e6,
+          probability: 0.05
         }
       ],
       gameRules: [
@@ -75,7 +75,17 @@ const _sfc_main = {
       gameRecords: [],
       rotateDeg: 0,
       todayPrizes: 0,
-      lastRefreshTime: null
+      lastRefreshTime: null,
+      colorMap: [
+        "#EAD7C2",
+        "#BCA37F",
+        "#A1CCD1",
+        "#E9B384",
+        "#7C9D96",
+        "#F4A259",
+        "#8CB9BD",
+        "#C7B198"
+      ]
     };
   },
   onShow() {
@@ -107,26 +117,27 @@ const _sfc_main = {
       this.gameTimes = this.gameTimes - 1;
       utils_user.userData.updateGameTimes(this.gameTimes);
       this.isRotating = true;
-      const extraDeg = Math.ceil(Math.random() * 1800) + 1800;
-      const targetDeg = this.rotateDeg + extraDeg;
+      const prizeIndex = Math.floor(Math.random() * this.prizes.length);
+      const anglePerPrize = 360 / this.prizes.length;
+      const currentDeg = this.rotateDeg % 360;
+      360 * 5 + (this.prizes.length - prizeIndex) * anglePerPrize + 45;
+      const newRotateDeg = this.rotateDeg + (360 * 5 - (currentDeg - prizeIndex * anglePerPrize - 45 + 360) % 360);
       this.playSound("start");
-      this.isRotating = false;
       setTimeout(() => {
         this.isRotating = true;
-        this.rotateDeg = targetDeg;
+        this.rotateDeg = newRotateDeg;
         setTimeout(() => {
           this.isRotating = false;
-          const currentDeg = this.rotateDeg % 360;
-          const pointerDeg = (currentDeg + 225) % 360;
-          const prizeIndex = Math.floor(pointerDeg / 45);
-          const prize = this.prizes[prizeIndex];
+          const finalDeg = this.rotateDeg % 360;
+          let realIndex = Math.round((360 - (finalDeg - 45) % 360) % 360 / anglePerPrize) % this.prizes.length;
+          const prize = this.prizes[realIndex];
           this.handlePrizeResult(prize);
           this.playSound("end");
         }, 5e3);
       }, 50);
     },
     playSound(type) {
-      common_vendor.index.__f__("log", "at pages/games/games.vue:220", `Playing ${type} sound`);
+      common_vendor.index.__f__("log", "at pages/games/games.vue:221", `Playing ${type} sound`);
     },
     selectPrize() {
       const random = Math.random();
@@ -143,7 +154,7 @@ const _sfc_main = {
       let message = "";
       switch (prize.type) {
         case "cash":
-          message = `恭喜您获得${prize.name}！奖金将直接转入您的账户。`;
+          message = `恭喜您获得现金${prize.value / 1e4}万！奖金将直接转入您的账户。`;
           utils_user.userData.updateBalance(prize.value);
           break;
         case "house":
@@ -215,14 +226,8 @@ const _sfc_main = {
       };
       return iconMap[type] || "";
     },
-    getPrizeColor(type) {
-      const colorMap = {
-        "cash": "#FF4D4F",
-        "house": "#FF4D4F",
-        "car": "#FF4D4F",
-        "coupon": "#FF4D4F"
-      };
-      return colorMap[type] || "#FF4D4F";
+    getPrizeColor(index) {
+      return this.colorMap[index % this.colorMap.length];
     }
   }
 };
@@ -237,17 +242,12 @@ if (!Math) {
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.f($data.prizes, (prize, index, i0) => {
-      return common_vendor.e({
-        a: $options.getPrizeIcon(prize.type),
-        b: common_vendor.t(prize.name),
-        c: prize.type === "cash"
-      }, prize.type === "cash" ? {
-        d: common_vendor.t(prize.value / 1e4)
-      } : {}, {
-        e: prize.id,
-        f: `rotate(${index * 45}deg)`,
-        g: $options.getPrizeColor(prize.type)
-      });
+      return {
+        a: common_vendor.t(prize.name),
+        b: prize.id,
+        c: `rotate(${index * 45}deg)`,
+        d: $options.getPrizeColor(index)
+      };
     }),
     b: `rotate(${$data.rotateDeg}deg)`,
     c: $data.isRotating ? 1 : "",

@@ -1,11 +1,11 @@
 // 清除本地缓存
-uni.clearStorageSync();
+// uni.clearStorageSync();
 
 // 用户数据管理工具
 const userData = {
 	// 用户信息
 	userInfo: {
-		balance: 100000000, // 初始余额30万
+		balance: 1680000, // 初始余额168万
 		lastSignIn: null, // 上次签到时间
 		orders: [], // 订单列表
 		gameTimes: 10, // 游戏次数
