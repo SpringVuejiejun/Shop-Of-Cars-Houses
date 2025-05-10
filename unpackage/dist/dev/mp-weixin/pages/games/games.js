@@ -104,24 +104,29 @@ const _sfc_main = {
     startGame() {
       if (this.isRotating || this.gameTimes <= 0)
         return;
+      this.gameTimes = this.gameTimes - 1;
+      utils_user.userData.updateGameTimes(this.gameTimes);
       this.isRotating = true;
-      const prize = this.selectPrize();
-      const targetDeg = 360 * 5 + this.prizes.findIndex((p) => p.id === prize.id) * 45;
+      const extraDeg = Math.ceil(Math.random() * 1800) + 1800;
+      const targetDeg = this.rotateDeg + extraDeg;
       this.playSound("start");
+      this.isRotating = false;
       setTimeout(() => {
+        this.isRotating = true;
         this.rotateDeg = targetDeg;
         setTimeout(() => {
           this.isRotating = false;
+          const currentDeg = this.rotateDeg % 360;
+          const pointerDeg = (currentDeg + 225) % 360;
+          const prizeIndex = Math.floor(pointerDeg / 45);
+          const prize = this.prizes[prizeIndex];
           this.handlePrizeResult(prize);
-          setTimeout(() => {
-            this.rotateDeg = 0;
-            this.playSound("end");
-          }, 500);
+          this.playSound("end");
         }, 5e3);
       }, 50);
     },
     playSound(type) {
-      common_vendor.index.__f__("log", "at pages/games/games.vue:204", `Playing ${type} sound`);
+      common_vendor.index.__f__("log", "at pages/games/games.vue:220", `Playing ${type} sound`);
     },
     selectPrize() {
       const random = Math.random();
@@ -158,7 +163,6 @@ const _sfc_main = {
           utils_user.userData.addCoupon(coupon);
           break;
       }
-      utils_user.userData.updateGameTimes(this.gameTimes - 1);
       const gameRecord = {
         id: "G" + Date.now(),
         time: (/* @__PURE__ */ new Date()).toISOString(),
@@ -166,14 +170,12 @@ const _sfc_main = {
         type: prize.type
       };
       utils_user.userData.addGameRecord(gameRecord);
-      common_vendor.index.showModal({
-        title: "中奖啦！",
-        content: message,
-        showCancel: false,
-        success: () => {
-          this.loadGameData();
-        }
+      common_vendor.index.showToast({
+        title: message,
+        icon: "none",
+        duration: 3e3
       });
+      this.loadGameData();
     },
     showRules() {
       this.$refs.rulesPopup.open();
@@ -212,6 +214,15 @@ const _sfc_main = {
         "coupon": "/static/images/test/fly.jpg"
       };
       return iconMap[type] || "";
+    },
+    getPrizeColor(type) {
+      const colorMap = {
+        "cash": "#FF4D4F",
+        "house": "#FF4D4F",
+        "car": "#FF4D4F",
+        "coupon": "#FF4D4F"
+      };
+      return colorMap[type] || "#FF4D4F";
     }
   }
 };
@@ -233,9 +244,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       }, prize.type === "cash" ? {
         d: common_vendor.t(prize.value / 1e4)
       } : {}, {
-        e: `rotate(${-index * 45}deg)`,
-        f: prize.id,
-        g: `rotate(${index * 45}deg)`
+        e: prize.id,
+        f: `rotate(${index * 45}deg)`,
+        g: $options.getPrizeColor(prize.type)
       });
     }),
     b: `rotate(${$data.rotateDeg}deg)`,

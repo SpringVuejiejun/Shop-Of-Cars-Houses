@@ -41,7 +41,7 @@ const _sfc_main = {
     },
     loadHistoryOrders() {
       const orders = utils_user.userData.getOrderList();
-      common_vendor.index.__f__("log", "at pages/user/user.vue:167", orders);
+      common_vendor.index.__f__("log", "at pages/user/user.vue:169", orders);
       const gameRecords = utils_user.userData.getGameRecords();
       const gameOrders = gameRecords.filter((record) => record.type !== "coupon").map((record) => ({
         id: record.id,
@@ -57,7 +57,7 @@ const _sfc_main = {
       }));
       this.historyOrders = [...orders, ...gameOrders].sort((a, b) => new Date(b.createTime) - new Date(a.createTime)).slice(0, 5).map((order) => ({
         ...order,
-        productImage: order.productImage || "/static/images/test/fly.jpg"
+        productImage: order.productImage || "https://img.picui.cn/free/2025/05/09/681e034c3cc49.jpg"
       }));
     },
     getPrizeImage(prizeName) {
@@ -162,10 +162,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       }, item.price > 0 ? {
         f: common_vendor.t(item.price)
       } : {}, {
-        g: common_vendor.t(item.status),
-        h: common_vendor.n(item.status === "已完成" ? _ctx.completed : item.status),
-        i: item.type === "game"
+        g: item.type === "game"
       }, item.type === "game" ? {} : {}, {
+        h: common_vendor.t(item.status),
+        i: common_vendor.n(item.status === "已完成" ? "completed" : item.status),
         j: index,
         k: common_vendor.o(($event) => $options.viewOrderDetail(item), index)
       });

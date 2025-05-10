@@ -10,8 +10,11 @@
 		<view class="turntable-container">
 			<view class="turntable" :style="{ transform: `rotate(${rotateDeg}deg)` }">
 				<view class="prize-item" v-for="(prize, index) in prizes" :key="prize.id" 
-					:style="{ transform: `rotate(${index * 45}deg)` }">
-					<view class="prize-content" :style="{ transform: `rotate(${-index * 45}deg)` }">
+					:style="{ 
+						transform: `rotate(${index * 45}deg)`,
+						'background-color': getPrizeColor(prize.type)
+					}">
+					<view class="prize-content">
 						<image class="prize-icon" :src="getPrizeIcon(prize.type)" mode="aspectFit"></image>
 						<text class="prize-name">{{prize.name}}</text>
 						<text class="prize-value" v-if="prize.type === 'cash'">¥{{prize.value/10000}}万</text>
@@ -179,23 +182,36 @@
 			},
 			startGame() {
 				if (this.isRotating || this.gameTimes <= 0) return
+
+				// 先扣除游戏次数
+				this.gameTimes = this.gameTimes - 1
+				userData.updateGameTimes(this.gameTimes)
 				
 				this.isRotating = true
-				const prize = this.selectPrize()
-				const targetDeg = 360 * 5 + (this.prizes.findIndex(p => p.id === prize.id) * 45)
+
+				// 计算新的旋转角度：当前角度 + 随机圈数(5-10圈)
+				const extraDeg = Math.ceil(Math.random() * 1800) + 1800 // 5-10圈之间的随机角度
+				const targetDeg = this.rotateDeg + extraDeg
 				
 				// 添加音效
 				this.playSound('start')
 				
+				// 重置指针动画状态
+				this.isRotating = false
 				setTimeout(() => {
+					this.isRotating = true
 					this.rotateDeg = targetDeg
+					
 					setTimeout(() => {
 						this.isRotating = false
+						// 在转盘停止时计算指针指向的奖品
+						const currentDeg = this.rotateDeg % 360
+						const pointerDeg = (currentDeg + 225) % 360
+						const prizeIndex = Math.floor(pointerDeg / 45)
+						const prize = this.prizes[prizeIndex]
+						
 						this.handlePrizeResult(prize)
-						setTimeout(() => {
-							this.rotateDeg = 0
-							this.playSound('end')
-						}, 500)
+						this.playSound('end')
 					}, 5000)
 				}, 50)
 			},
@@ -239,8 +255,7 @@
 						break
 				}
 				
-				// 更新游戏次数和记录
-				userData.updateGameTimes(this.gameTimes - 1)
+				// 添加游戏记录
 				const gameRecord = {
 					id: 'G' + Date.now(),
 					time: new Date().toISOString(),
@@ -249,14 +264,15 @@
 				}
 				userData.addGameRecord(gameRecord)
 				
-				uni.showModal({
-					title: '中奖啦！',
-					content: message,
-					showCancel: false,
-					success: () => {
-						this.loadGameData()
-					}
+				// 显示中奖信息
+				uni.showToast({
+					title: message,
+					icon: 'none',
+					duration: 3000
 				})
+				
+				// 刷新游戏数据
+				this.loadGameData()
 			},
 			showRules() {
 				this.$refs.rulesPopup.open()
@@ -295,6 +311,15 @@
 					'coupon': '/static/images/test/fly.jpg'
 				}
 				return iconMap[type] || ''
+			},
+			getPrizeColor(type) {
+				const colorMap = {
+					'cash': '#FF4D4F',
+					'house': '#FF4D4F',
+					'car': '#FF4D4F',
+					'coupon': '#FF4D4F'
+				}
+				return colorMap[type] || '#FF4D4F'
 			}
 		}
 	}
@@ -327,29 +352,26 @@
 	
 	.turntable-container {
 		position: relative;
-		width: 600rpx;
-		height: 600rpx;
+		width: 650rpx;
+		height: 650rpx;
 		margin: 0 auto 40rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 	
 	.turntable {
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
-		background: conic-gradient(
-			#FF4D4F 0deg 45deg,
-			#FFA940 45deg 90deg,
-			#FFEC3D 90deg 135deg,
-			#73D13D 135deg 180deg,
-			#36CFC9 180deg 225deg,
-			#1890FF 225deg 270deg,
-			#722ED1 270deg 315deg,
-			#F759AB 315deg 360deg
-		);
 		transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-		position: relative;
-		box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.18);
-		border: 8rpx solid #fffbe6;
+		overflow: hidden;
+		box-shadow: 0 0 0 10rpx #333,
+			0 0 0 30rpx #fff,
+			0 0 0 36rpx #111;
 	}
 	
 	.prize-item {
@@ -358,11 +380,13 @@
 		height: 50%;
 		left: 0;
 		top: 0;
-		transform-origin: right bottom;
+		transform-origin: bottom right;
+		background-color: var(--prize-color);
+		clip-path: polygon(0 0, 56% 0, 100% 100%, 0 56%);
 	}
 	
 	.prize-content {
-		position: absolute;
+		position: relative;
 		width: 100%;
 		height: 100%;
 		display: flex;
@@ -370,56 +394,91 @@
 		justify-content: center;
 		align-items: center;
 		transform-origin: center;
-		padding: 10rpx;
+		padding: 30rpx 20rpx;
+		user-select: none;
 	}
 	
 	.prize-icon {
-		width: 40rpx;
-		height: 40rpx;
-		margin-bottom: 6rpx;
+		width: 48rpx;
+		height: 48rpx;
+		margin-bottom: 8rpx;
+		filter: drop-shadow(0 2rpx 4rpx rgba(0,0,0,0.2));
 	}
 	
 	.prize-name {
-		font-size: 24rpx;
-		color: #fff;
+		position: relative;
+		transform: rotate(45deg);
+		font-size: 26rpx;
+		color: #FFFFFF;
 		text-align: center;
-		margin-bottom: 4rpx;
-		line-height: 1.2;
+		margin-bottom: 6rpx;
+		line-height: 1.3;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		max-width: 100%;
-		text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+		max-width: 90%;
+		text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.3);
+		font-weight: 600;
+		letter-spacing: 1rpx;
 	}
 	
 	.prize-value {
-		font-size: 20rpx;
-		color: #fff;
+		position: relative;
+		transform: rotate(45deg);
+		font-size: 32rpx;
+		color: #FFFFFF;
 		text-align: center;
 		line-height: 1.2;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		max-width: 100%;
-		text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+		max-width: 90%;
+		text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.3);
+		font-weight: bold;
+		letter-spacing: 1rpx;
 	}
 	
 	.pointer {
 		position: absolute;
-		top: -40rpx;
-		left: 51.5%;
-		transform: translateX(-50%);
-		width: 0;
-		height: 0;
-		border-left: 20rpx solid transparent;
-		border-right: 20rpx solid transparent;
-		border-top: 45rpx solid #FF4D4F;
-		z-index: 1;
-		transition: all 0.3s ease;
+		width: 120rpx;
+		height: 120rpx;
+		background-color: #fff;
+		border-radius: 50%;
+		z-index: 10;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: 600;
+		color: #333;
+		border: 8rpx solid rgba(0, 0, 0, .75);
+		box-shadow: 0 4rpx 8rpx rgba(0,0,0,0.2);
+		transition: transform 0.2s ease;
+	}
+	
+	.pointer::before {
+		content: '';
+		position: absolute;
+		top: -56rpx;
+		width: 40rpx;
+		height: 60rpx;
+		background-color: #fff;
+		clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
+		box-shadow: 0 -2rpx 4rpx rgba(0,0,0,0.1);
 	}
 	
 	.pointer-active {
-		transform: translateX(-50%) scale(1.1);
+		transform: scale(0.95);
+	}
+	
+	.turntable::before {
+		content: '';
+		position: absolute;
+		top: -6rpx;
+		left: -6rpx;
+		right: -6rpx;
+		bottom: -6rpx;
+		border: 2rpx solid rgba(255,255,255,0.3);
+		border-radius: 50%;
 	}
 	
 	.game-info {

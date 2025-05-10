@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container" v-if="product">
 		<!-- 商品圖片 -->
 		<swiper class="product-images" indicator-dots autoplay circular>
 			<swiper-item v-for="(image, index) in product.images" :key="index">
@@ -40,11 +40,11 @@
 		<view class="bottom-bar">
 			<view class="left">
 				<view class="icon-btn" @tap="goToMenu">
-					<image src="/static/images/home.png" mode="aspectFit"></image>
+					<image src="/static/tabs/home.png" mode="aspectFit"></image>
 					<text>首页</text>
 				</view>
 				<view class="icon-btn" @tap="goToUser">
-					<image src="/static/images/user.png" mode="aspectFit"></image>
+					<image src="/static/tabs/user.png" mode="aspectFit"></image>
 					<text>我的</text>
 				</view>
 			</view>
@@ -124,9 +124,12 @@
 				// 添加订单
 				userData.addOrder(order)
 				
-				uni.showToast({
-					title: '已加入订单，请前往订单页面付款',
-					icon: 'success'
+				uni.showModal({
+					title: '订单',
+					content: '已提交订单，请前往订单页面付款',
+					icon: 'success',
+					showCancel: false,
+					confirmText: '好的'
 				})
 				
 				// setTimeout(() => {
@@ -140,7 +143,7 @@
 			},
 			goToMenu() {
 				uni.switchTab({
-					url: '/pages/menu/menu'
+					url: '/pages/index/index'
 				})
 			},
 			goToUser() {

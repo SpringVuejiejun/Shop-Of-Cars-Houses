@@ -1,7 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const utils_user = require("../../utils/user.js");
-const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
@@ -90,9 +89,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     k: $data.currentTab === "valid",
     l: $options.currentCoupons.length === 0
-  }, $options.currentCoupons.length === 0 ? {
-    m: common_assets._imports_0$3
-  } : {});
+  }, $options.currentCoupons.length === 0 ? {} : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);

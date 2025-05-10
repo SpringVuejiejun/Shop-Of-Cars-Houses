@@ -58,9 +58,12 @@ const _sfc_main = {
       };
       utils_user.userData.updateBalance(-this.selectedSku.price * 1e4);
       utils_user.userData.addOrder(order);
-      common_vendor.index.showToast({
-        title: "已加入订单，请前往订单页面付款",
-        icon: "success"
+      common_vendor.index.showModal({
+        title: "订单",
+        content: "已提交订单，请前往订单页面付款",
+        icon: "success",
+        showCancel: false,
+        confirmText: "好的"
       });
     },
     goToBargain() {
@@ -70,7 +73,7 @@ const _sfc_main = {
     },
     goToMenu() {
       common_vendor.index.switchTab({
-        url: "/pages/menu/menu"
+        url: "/pages/index/index"
       });
     },
     goToUser() {
@@ -81,17 +84,19 @@ const _sfc_main = {
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
-    a: common_vendor.f($data.product.images, (image, index, i0) => {
+  return common_vendor.e({
+    a: $data.product
+  }, $data.product ? {
+    b: common_vendor.f($data.product.images, (image, index, i0) => {
       return {
         a: image,
         b: index
       };
     }),
-    b: common_vendor.t($data.product.name),
-    c: common_vendor.t($data.selectedSku.price),
-    d: common_vendor.t($data.product.description),
-    e: common_vendor.f($data.product.skus, (sku, index, i0) => {
+    c: common_vendor.t($data.product.name),
+    d: common_vendor.t($data.selectedSku.price),
+    e: common_vendor.t($data.product.description),
+    f: common_vendor.f($data.product.skus, (sku, index, i0) => {
       return {
         a: common_vendor.t(sku.name),
         b: index,
@@ -99,19 +104,19 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: common_vendor.o(($event) => $options.selectSku(sku), index)
       };
     }),
-    f: common_vendor.f($data.selectedSku.features, (feature, index, i0) => {
+    g: common_vendor.f($data.selectedSku.features, (feature, index, i0) => {
       return {
         a: common_vendor.t(feature),
         b: index
       };
     }),
-    g: common_assets._imports_0$1,
-    h: common_vendor.o((...args) => $options.goToMenu && $options.goToMenu(...args)),
-    i: common_assets._imports_1$1,
-    j: common_vendor.o((...args) => $options.goToUser && $options.goToUser(...args)),
-    k: common_vendor.o((...args) => $options.startBargain && $options.startBargain(...args)),
-    l: common_vendor.o((...args) => $options.buyNow && $options.buyNow(...args))
-  };
+    h: common_assets._imports_0$1,
+    i: common_vendor.o((...args) => $options.goToMenu && $options.goToMenu(...args)),
+    j: common_assets._imports_1$1,
+    k: common_vendor.o((...args) => $options.goToUser && $options.goToUser(...args)),
+    l: common_vendor.o((...args) => $options.startBargain && $options.startBargain(...args)),
+    m: common_vendor.o((...args) => $options.buyNow && $options.buyNow(...args))
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);

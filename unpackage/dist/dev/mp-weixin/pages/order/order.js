@@ -92,7 +92,7 @@ const _sfc_main = {
         utils_user.userData.updateOrder(order);
         this.loadOrders();
         delete this.timers[order.id];
-      }, 3e4);
+      }, 1e4);
     },
     payOrder(order) {
       if (utils_user.userData.getUserInfo().balance / 1e4 < order.price) {

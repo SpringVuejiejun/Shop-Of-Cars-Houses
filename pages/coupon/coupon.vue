@@ -33,7 +33,7 @@
 		
 		<!-- 空状态 -->
 		<view class="empty" v-if="currentCoupons.length === 0">
-			<image class="empty-image" src="/static/images/empty-coupon.png"></image>
+			<image class="empty-image" src="https://img.picui.cn/free/2025/05/09/681e034f790dc.jpg"></image>
 			<text class="empty-text">暂无优惠券</text>
 		</view>
 	</view>

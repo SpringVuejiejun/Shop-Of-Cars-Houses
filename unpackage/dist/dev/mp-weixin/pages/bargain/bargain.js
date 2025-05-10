@@ -118,14 +118,14 @@ const _sfc_main = {
         productName: this.product.name,
         productImage: this.product.images[0],
         sku: this.selectedSku,
-        price: this.selectedSku.price,
+        price: this.currentPrice,
         status: "待付款",
         createTime: (/* @__PURE__ */ new Date()).toISOString()
       };
       utils_user.userData.updateBalance(-this.selectedSku.price * 1e4);
       utils_user.userData.addOrder(order);
       common_vendor.index.showToast({
-        title: "已加入订单，请前往订单页面付款",
+        title: "订单已提交",
         icon: "success"
       });
       setTimeout(() => {
@@ -135,17 +135,19 @@ const _sfc_main = {
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return {
-    a: $data.product.images[0],
-    b: common_vendor.t($data.product.name),
-    c: common_vendor.t($data.currentPrice),
-    d: common_vendor.t($data.product.skus[0].price),
-    e: common_vendor.t($data.product.minPrice),
-    f: common_vendor.t($data.bargainCount),
-    g: $options.progress + "%",
-    h: common_vendor.t(($data.product.skus[0].price - $data.currentPrice).toFixed(2)),
-    i: common_vendor.t(($data.currentPrice - $data.product.minPrice).toFixed(2)),
-    j: common_vendor.f($data.records, (item, index, i0) => {
+  return common_vendor.e({
+    a: $data.product
+  }, $data.product ? {
+    b: $data.product.images[0],
+    c: common_vendor.t($data.product.name),
+    d: common_vendor.t($data.currentPrice),
+    e: common_vendor.t($data.product.skus[0].price),
+    f: common_vendor.t($data.product.minPrice),
+    g: common_vendor.t($data.bargainCount),
+    h: $options.progress + "%",
+    i: common_vendor.t(($data.product.skus[0].price - $data.currentPrice).toFixed(2)),
+    j: common_vendor.t(($data.currentPrice - $data.product.minPrice).toFixed(2)),
+    k: common_vendor.f($data.records, (item, index, i0) => {
       return {
         a: common_vendor.t(item.name),
         b: common_vendor.t(item.amount),
@@ -153,10 +155,10 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: index
       };
     }),
-    k: common_vendor.o((...args) => $options.doBargain && $options.doBargain(...args)),
-    l: $data.isBargaining,
-    m: common_vendor.o((...args) => $options.buyNow && $options.buyNow(...args))
-  };
+    l: common_vendor.o((...args) => $options.doBargain && $options.doBargain(...args)),
+    m: $data.isBargaining,
+    n: common_vendor.o((...args) => $options.buyNow && $options.buyNow(...args))
+  } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createPage(MiniProgramPage);

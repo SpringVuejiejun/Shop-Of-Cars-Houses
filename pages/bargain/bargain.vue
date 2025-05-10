@@ -1,5 +1,5 @@
 <template>
-	<view class="container">
+	<view class="container" v-if="product">
 		<!-- 商品信息 -->
 		<view class="product-info">
 			<image :src="product.images[0]" mode="aspectFill" class="product-image"></image>
@@ -176,7 +176,7 @@
 					productName: this.product.name,
 					productImage: this.product.images[0],
 					sku: this.selectedSku,
-					price: this.selectedSku.price,
+					price: this.currentPrice,
 					status: '待付款',
 					createTime: new Date().toISOString()
 				}
@@ -187,7 +187,7 @@
 				userData.addOrder(order)
 				
 				uni.showToast({
-					title: '已加入订单，请前往订单页面付款',
+					title: '订单已提交',
 					icon: 'success'
 				})
 				

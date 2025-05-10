@@ -146,18 +146,18 @@
 				return statusMap[status] || ''
 			},
 			startDeliveryTimer(order) {
-				// 如果已經有定時器，先清除
+				// 如果已经有定時器，先清除
 				if (this.timers[order.id]) {
 					clearTimeout(this.timers[order.id]);
 				}
 				
-				// 設置30秒的定時器
+				// 设置10秒的定时器
 				this.timers[order.id] = setTimeout(() => {
 					order.status = '待收货';
 					userData.updateOrder(order);
 					this.loadOrders();
 					delete this.timers[order.id];
-				}, 30000);
+				}, 10000);
 			},
 			payOrder(order) {
 				if (userData.getUserInfo().balance/10000 < order.price) {

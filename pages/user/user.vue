@@ -75,9 +75,11 @@
 						<text class="purchase-time">{{formatDate(item.createTime)}}</text>
 					</view>
 					<view class="price-info">
-						<text class="price" v-if="item.price > 0">¥{{item.price}}万</text>
-						<text class="status" :class="item.status === '已完成' ? completed : item.status">{{item.status}}</text>
-						<text class="type-tag" v-if="item.type === 'game'">游戏奖品</text>
+						<view class="price-row">
+							<text class="price" v-if="item.price > 0">¥{{item.price}}万</text>
+							<text class="type-tag" v-if="item.type === 'game'">游戏奖品</text>
+						</view>
+						<text class="status" :class="item.status === '已完成' ? 'completed' : item.status">{{item.status}}</text>
 					</view>
 				</view>
 			</view>
@@ -189,7 +191,7 @@
 					.slice(0, 5)
 					.map(order => ({
 						...order,
-						productImage: order.productImage || '/static/images/test/fly.jpg'
+						productImage: order.productImage || 'https://img.picui.cn/free/2025/05/09/681e034c3cc49.jpg'
 					}))
 			},
 			getPrizeImage(prizeName) {
@@ -454,36 +456,47 @@
 	}
 	
 	.history-item .price-info {
-		text-align: right;
+		display: flex;
+		flex-direction: column;
+		gap: 10rpx;
+	}
+	
+	.history-item .price-row {
+		display: flex;
+		align-items: center;
+		gap: 10rpx;
 	}
 	
 	.history-item .price {
 		font-size: 32rpx;
 		color: #FF4D4F;
 		font-weight: bold;
-		display: block;
-		margin-bottom: 10rpx;
+	}
+	
+	.history-item .type-tag {
+		font-size: 24rpx;
+		color: #fff;
+		background-color: #4CAF50;
+		padding: 4rpx 12rpx;
+		border-radius: 6rpx;
 	}
 	
 	.history-item .status {
 		font-size: 24rpx;
-		padding: 4rpx 12rpx;
-		border-radius: 4rpx;
+		color: #999;
+		margin-top: 8rpx;
 	}
 	
 	.history-item .status.completed {
-		background-color: #73D13D;
-		color: #fff;
+		color: #52c41a;
 	}
 	
-	.history-item .type-tag {
-		font-size: 20rpx;
-		padding: 2rpx 8rpx;
-		border-radius: 4rpx;
-		background-color: #1890FF;
-		color: #fff;
-		margin-left: 10rpx;
-		display: inline-block;
+	.history-item .status.pending {
+		color: #faad14;
+	}
+	
+	.history-item .status.failed {
+		color: #ff4d4f;
 	}
 	
 	.coupon-section {
