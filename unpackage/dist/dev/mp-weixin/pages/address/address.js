@@ -14,7 +14,8 @@ const _sfc_main = {
         city: "",
         district: "",
         detail: "",
-        isDefault: false
+        isDefault: false,
+        id: ""
       },
       region: []
     };
@@ -22,9 +23,13 @@ const _sfc_main = {
   onLoad() {
     this.loadAddressList();
   },
+  onShow() {
+    this.loadAddressList();
+  },
   methods: {
     loadAddressList() {
-      this.addressList = utils_user.userData.getAddressList();
+      const list = utils_user.userData.getAddressList();
+      this.addressList = [...list];
     },
     addAddress() {
       this.isEdit = false;
@@ -36,7 +41,8 @@ const _sfc_main = {
         city: "",
         district: "",
         detail: "",
-        isDefault: false
+        isDefault: false,
+        id: "A" + Date.now()
       };
       this.region = [];
       this.$refs.addressPopup.open();
@@ -55,15 +61,21 @@ const _sfc_main = {
         content: "确定要删除这个地址吗？",
         success: (res) => {
           if (res.confirm) {
-            utils_user.userData.deleteAddress(index);
-            this.loadAddressList();
+            const addressId = this.addressList[index].id;
+            const updatedList = utils_user.userData.deleteAddress(addressId);
+            this.addressList = [...updatedList];
+            common_vendor.index.showToast({
+              title: "删除成功",
+              icon: "success"
+            });
           }
         }
       });
     },
     setDefault(index) {
-      utils_user.userData.setDefaultAddress(index);
-      this.loadAddressList();
+      utils_user.userData.setDefaultAddress(this.addressList[index].id);
+      const updatedList = utils_user.userData.getAddressList();
+      this.addressList = [...updatedList];
     },
     handleRegionChange(e) {
       this.region = e.detail.value;
@@ -100,12 +112,18 @@ const _sfc_main = {
         return;
       }
       if (this.isEdit) {
-        utils_user.userData.updateAddress(this.editIndex, this.formData);
+        this.formData.id = this.addressList[this.editIndex].id;
+        const updatedList = utils_user.userData.updateAddress(this.formData);
+        this.addressList = [...updatedList];
       } else {
-        utils_user.userData.addAddress(this.formData);
+        const newList = utils_user.userData.addAddress(this.formData);
+        this.addressList = [...newList];
       }
-      this.loadAddressList();
       this.closePopup();
+      common_vendor.index.showToast({
+        title: "保存成功",
+        icon: "success"
+      });
     }
   }
 };

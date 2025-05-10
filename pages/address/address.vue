@@ -90,7 +90,8 @@
 					city: '',
 					district: '',
 					detail: '',
-					isDefault: false
+					isDefault: false,
+					id:''
 				},
 				region: []
 			}
@@ -98,9 +99,13 @@
 		onLoad() {
 			this.loadAddressList()
 		},
+		onShow() {
+			this.loadAddressList()
+		},
 		methods: {
 			loadAddressList() {
-				this.addressList = userData.getAddressList()
+				const list = userData.getAddressList()
+				this.addressList = [...list]
 			},
 			addAddress() {
 				this.isEdit = false
@@ -112,7 +117,8 @@
 					city: '',
 					district: '',
 					detail: '',
-					isDefault: false
+					isDefault: false,
+					id: 'A' + Date.now()
 				}
 				this.region = []
 				this.$refs.addressPopup.open()
@@ -131,15 +137,21 @@
 					content: '确定要删除这个地址吗？',
 					success: (res) => {
 						if (res.confirm) {
-							userData.deleteAddress(index)
-							this.loadAddressList()
+							const addressId = this.addressList[index].id
+							const updatedList = userData.deleteAddress(addressId)
+							this.addressList = [...updatedList]
+							uni.showToast({
+								title: '删除成功',
+								icon: 'success'
+							})
 						}
 					}
 				})
 			},
 			setDefault(index) {
-				userData.setDefaultAddress(index)
-				this.loadAddressList()
+				userData.setDefaultAddress(this.addressList[index].id)
+				const updatedList = userData.getAddressList()
+				this.addressList = [...updatedList]
 			},
 			handleRegionChange(e) {
 				this.region = e.detail.value
@@ -177,13 +189,22 @@
 				}
 				
 				if (this.isEdit) {
-					userData.updateAddress(this.editIndex, this.formData)
+					this.formData.id = this.addressList[this.editIndex].id
+					const updatedList = userData.updateAddress(this.formData)
+					this.addressList = [...updatedList]
 				} else {
-					userData.addAddress(this.formData)
+					const newList = userData.addAddress(this.formData)
+					this.addressList = [...newList]
 				}
 				
-				this.loadAddressList()
+				// 關閉彈窗
 				this.closePopup()
+				
+				// 顯示保存成功提示
+				uni.showToast({
+					title: '保存成功',
+					icon: 'success'
+				})
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 // 清除本地缓存
-uni.clearStorageSync();
+// uni.clearStorageSync();
 
 // 用户数据管理工具
 const userData = {
@@ -15,7 +15,56 @@ const userData = {
 		nickname: '福布斯在榜者',
 		ID: '88888888',
 		phone: '',
-		frozenAmount: 3000000 // 冻结金额
+		frozenAmount: 3000000, // 冻结金额
+		addressList: [] // 地址列表
+	},
+
+	// 获取地址列表
+	getAddressList() {
+		return this.userInfo.addressList || []
+	},
+
+	// 添加地址
+	addAddress(address) {
+		// 如果是第一個地址，設置為默認
+		if (this.userInfo.addressList.length === 0) {
+			address.isDefault = true
+		}
+		this.userInfo.addressList.push(address)
+		this.saveUserInfo()
+		return this.userInfo.addressList
+	},
+
+	// 删除地址
+	deleteAddress(addressId) {
+		const index = this.userInfo.addressList.findIndex(item => item.id === addressId)
+		if (index > -1) {
+			// 如果刪除的是默認地址，且還有其他地址，則將第一個地址設為默認
+			if (this.userInfo.addressList[index].isDefault && this.userInfo.addressList.length > 1) {
+				this.userInfo.addressList[0].isDefault = true
+			}
+			this.userInfo.addressList.splice(index, 1)
+			this.saveUserInfo()
+		}
+		return this.userInfo.addressList
+	},
+
+	// 更新地址
+	updateAddress(address) {
+		const index = this.userInfo.addressList.findIndex(item => item.id === address.id)
+		if (index > -1) {
+			this.userInfo.addressList[index] = address
+			this.saveUserInfo()
+		}
+		return this.userInfo.addressList
+	},
+
+	// 设置默认地址
+	setDefaultAddress(addressId) {
+		this.userInfo.addressList.forEach(item => {
+			item.isDefault = item.id === addressId
+		})
+		this.saveUserInfo()
 	},
 
 	// 获取游戏记录

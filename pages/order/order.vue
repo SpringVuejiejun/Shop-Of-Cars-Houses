@@ -170,6 +170,7 @@
 				
 				order.status = '待发货'
 				userData.updateOrder(order)
+				// 更新用户余额
 				userData.updateBalance(-order.price*10000)
 				
 				// 啟動發貨定時器

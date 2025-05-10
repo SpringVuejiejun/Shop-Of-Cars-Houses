@@ -1,6 +1,5 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
-common_vendor.index.clearStorageSync();
 const userData = {
   // 用户信息
   userInfo: {
@@ -20,8 +19,51 @@ const userData = {
     nickname: "福布斯在榜者",
     ID: "88888888",
     phone: "",
-    frozenAmount: 3e6
+    frozenAmount: 3e6,
     // 冻结金额
+    addressList: []
+    // 地址列表
+  },
+  // 获取地址列表
+  getAddressList() {
+    return this.userInfo.addressList || [];
+  },
+  // 添加地址
+  addAddress(address) {
+    if (this.userInfo.addressList.length === 0) {
+      address.isDefault = true;
+    }
+    this.userInfo.addressList.push(address);
+    this.saveUserInfo();
+    return this.userInfo.addressList;
+  },
+  // 删除地址
+  deleteAddress(addressId) {
+    const index = this.userInfo.addressList.findIndex((item) => item.id === addressId);
+    if (index > -1) {
+      if (this.userInfo.addressList[index].isDefault && this.userInfo.addressList.length > 1) {
+        this.userInfo.addressList[0].isDefault = true;
+      }
+      this.userInfo.addressList.splice(index, 1);
+      this.saveUserInfo();
+    }
+    return this.userInfo.addressList;
+  },
+  // 更新地址
+  updateAddress(address) {
+    const index = this.userInfo.addressList.findIndex((item) => item.id === address.id);
+    if (index > -1) {
+      this.userInfo.addressList[index] = address;
+      this.saveUserInfo();
+    }
+    return this.userInfo.addressList;
+  },
+  // 设置默认地址
+  setDefaultAddress(addressId) {
+    this.userInfo.addressList.forEach((item) => {
+      item.isDefault = item.id === addressId;
+    });
+    this.saveUserInfo();
   },
   // 获取游戏记录
   getGameRecords() {
@@ -41,7 +83,7 @@ const userData = {
       }
       return this.userInfo;
     } catch (e) {
-      common_vendor.index.__f__("error", "at utils/user.js:41", "获取用戶信息失败：", e);
+      common_vendor.index.__f__("error", "at utils/user.js:90", "获取用戶信息失败：", e);
       return this.userInfo;
     }
   },
@@ -54,7 +96,7 @@ const userData = {
     try {
       common_vendor.index.setStorageSync("userInfo", JSON.stringify(this.userInfo));
     } catch (e) {
-      common_vendor.index.__f__("error", "at utils/user.js:56", "保存用戶信息失败：", e);
+      common_vendor.index.__f__("error", "at utils/user.js:105", "保存用戶信息失败：", e);
     }
   },
   // 签到
