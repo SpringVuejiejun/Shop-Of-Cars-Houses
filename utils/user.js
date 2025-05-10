@@ -15,7 +15,8 @@ const userData = {
 		nickname: '福布斯在榜者',
 		ID: '88888888',
 		phone: '',
-		frozenAmount: 3000000 // 冻结金额
+		frozenAmount: 3000000, // 冻结金额
+		addresses: [] // 地址列表
 	},
 
 	// 获取游戏记录
@@ -234,6 +235,72 @@ const userData = {
 		const index = userInfo.coupons.findIndex(coupon => coupon.id === couponId)
 		if (index === -1) return false
 		userInfo.coupons.splice(index, 1)
+		this.saveUserInfo()
+		return true
+	},
+
+	// 获取地址列表
+	getAddressList() {
+		const userInfo = this.getUserInfo()
+		return userInfo.addresses || []
+	},
+
+	// 添加地址
+	addAddress(address) {
+		const userInfo = this.getUserInfo()
+		if (!userInfo.addresses) {
+			userInfo.addresses = []
+		}
+		
+		// 如果设置为默认地址，将其他地址的默认状态设为false
+		if (address.isDefault) {
+			userInfo.addresses.forEach(addr => addr.isDefault = false)
+		}
+		
+		userInfo.addresses.push(address)
+		this.saveUserInfo()
+	},
+
+	// 更新地址
+	updateAddress(index, address) {
+		const userInfo = this.getUserInfo()
+		if (!userInfo.addresses || index >= userInfo.addresses.length) {
+			return false
+		}
+		
+		// 如果设置为默认地址，将其他地址的默认状态设为false
+		if (address.isDefault) {
+			userInfo.addresses.forEach(addr => addr.isDefault = false)
+		}
+		
+		userInfo.addresses[index] = address
+		this.saveUserInfo()
+		return true
+	},
+
+	// 删除地址
+	deleteAddress(index) {
+		const userInfo = this.getUserInfo()
+		if (!userInfo.addresses || index >= userInfo.addresses.length) {
+			return false
+		}
+		
+		userInfo.addresses.splice(index, 1)
+		this.saveUserInfo()
+		return true
+	},
+
+	// 设置默认地址
+	setDefaultAddress(index) {
+		const userInfo = this.getUserInfo()
+		if (!userInfo.addresses || index >= userInfo.addresses.length) {
+			return false
+		}
+		
+		userInfo.addresses.forEach((addr, i) => {
+			addr.isDefault = i === index
+		})
+		
 		this.saveUserInfo()
 		return true
 	}

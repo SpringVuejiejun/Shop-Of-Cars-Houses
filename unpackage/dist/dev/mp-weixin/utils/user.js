@@ -19,8 +19,10 @@ const userData = {
     nickname: "福布斯在榜者",
     ID: "88888888",
     phone: "",
-    frozenAmount: 3e6
+    frozenAmount: 3e6,
     // 冻结金额
+    addresses: []
+    // 地址列表
   },
   // 获取游戏记录
   getGameRecords() {
@@ -40,7 +42,7 @@ const userData = {
       }
       return this.userInfo;
     } catch (e) {
-      common_vendor.index.__f__("error", "at utils/user.js:41", "获取用戶信息失败：", e);
+      common_vendor.index.__f__("error", "at utils/user.js:42", "获取用戶信息失败：", e);
       return this.userInfo;
     }
   },
@@ -53,7 +55,7 @@ const userData = {
     try {
       common_vendor.index.setStorageSync("userInfo", JSON.stringify(this.userInfo));
     } catch (e) {
-      common_vendor.index.__f__("error", "at utils/user.js:56", "保存用戶信息失败：", e);
+      common_vendor.index.__f__("error", "at utils/user.js:57", "保存用戶信息失败：", e);
     }
   },
   // 签到
@@ -212,6 +214,58 @@ const userData = {
     if (index === -1)
       return false;
     userInfo.coupons.splice(index, 1);
+    this.saveUserInfo();
+    return true;
+  },
+  // 获取地址列表
+  getAddressList() {
+    const userInfo = this.getUserInfo();
+    return userInfo.addresses || [];
+  },
+  // 添加地址
+  addAddress(address) {
+    const userInfo = this.getUserInfo();
+    if (!userInfo.addresses) {
+      userInfo.addresses = [];
+    }
+    if (address.isDefault) {
+      userInfo.addresses.forEach((addr) => addr.isDefault = false);
+    }
+    userInfo.addresses.push(address);
+    this.saveUserInfo();
+  },
+  // 更新地址
+  updateAddress(index, address) {
+    const userInfo = this.getUserInfo();
+    if (!userInfo.addresses || index >= userInfo.addresses.length) {
+      return false;
+    }
+    if (address.isDefault) {
+      userInfo.addresses.forEach((addr) => addr.isDefault = false);
+    }
+    userInfo.addresses[index] = address;
+    this.saveUserInfo();
+    return true;
+  },
+  // 删除地址
+  deleteAddress(index) {
+    const userInfo = this.getUserInfo();
+    if (!userInfo.addresses || index >= userInfo.addresses.length) {
+      return false;
+    }
+    userInfo.addresses.splice(index, 1);
+    this.saveUserInfo();
+    return true;
+  },
+  // 设置默认地址
+  setDefaultAddress(index) {
+    const userInfo = this.getUserInfo();
+    if (!userInfo.addresses || index >= userInfo.addresses.length) {
+      return false;
+    }
+    userInfo.addresses.forEach((addr, i) => {
+      addr.isDefault = i === index;
+    });
     this.saveUserInfo();
     return true;
   }
