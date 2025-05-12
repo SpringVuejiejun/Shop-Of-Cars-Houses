@@ -49,7 +49,7 @@
 				</view>
 			</view>
 			<view class="right">
-				<button class="bargain-btn" @tap="startBargain">砍价</button>
+				<button class="bargain-btn" @tap="goToBargain">砍价</button>
 				<button class="buy-btn" @tap="buyNow">立即购买</button>
 			</view>
 		</view>
@@ -89,11 +89,6 @@
 			selectSku(sku) {
 				this.selectedSku = sku
 			},
-			startBargain() {
-				uni.navigateTo({
-					url: '/pages/bargain/bargain?id=' + this.product.id
-				})
-			},
 			buyNow() {
 				if (this.userBalance < this.selectedSku.price) {
 					uni.showModal({
@@ -119,8 +114,6 @@
 				}
 				// console.log(this.product.images[0])
 				
-				// 更新用户余额
-				userData.updateBalance(-this.selectedSku.price * 10000)
 				// 添加订单
 				userData.addOrder(order)
 				
@@ -138,7 +131,7 @@
 			},
 			goToBargain() {
 				uni.navigateTo({
-					url: '/pages/bargain/bargain?id=' + this.product.id
+					url: '/pages/son_pages/bargain?id=' + this.product.id
 				})
 			},
 			goToMenu() {

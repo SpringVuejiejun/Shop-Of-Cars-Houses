@@ -1,5 +1,5 @@
 // 清除本地缓存
-// uni.clearStorageSync();
+uni.clearStorageSync();
 
 // 用户数据管理工具
 const userData = {

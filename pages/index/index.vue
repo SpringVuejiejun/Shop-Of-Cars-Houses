@@ -128,7 +128,7 @@
 			handleSelect(item) {
 				if (item.type === 'product') {
 					uni.navigateTo({
-						url: `/pages/detail/detail?id=${item.id}`
+						url: `/pages/son_pages/detail?id=${item.id}`
 					})
 				} else {
 					uni.navigateTo({
@@ -151,7 +151,7 @@
 			goToDetail(productId) {
 				// console.log('跳轉到詳情頁，商品ID：', productId)
 				uni.navigateTo({
-					url: '/pages/detail/detail?id=' + productId
+					url: '/pages/son_pages/detail?id=' + productId
 				})
 			},
 			prevBanner() {

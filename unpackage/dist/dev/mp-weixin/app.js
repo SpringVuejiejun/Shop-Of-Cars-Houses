@@ -4,16 +4,16 @@ const common_vendor = require("./common/vendor.js");
 if (!Math) {
   "./pages/index/index.js";
   "./pages/menu/menu.js";
+  "./pages/games/games.js";
   "./pages/order/order.js";
   "./pages/user/user.js";
-  "./pages/detail/detail.js";
-  "./pages/bargain/bargain.js";
-  "./pages/games/games.js";
   "./pages/user/assets.js";
-  "./pages/address/address.js";
-  "./pages/service/service.js";
-  "./pages/settings/settings.js";
-  "./pages/coupon/coupon.js";
+  "./pages/user/coupon.js";
+  "./pages/user/address.js";
+  "./pages/user/service.js";
+  "./pages/user/settings.js";
+  "./pages/son_pages/detail.js";
+  "./pages/son_pages/bargain.js";
 }
 const _sfc_main = {
   onLaunch: function() {

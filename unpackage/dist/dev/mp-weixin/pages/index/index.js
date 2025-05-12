@@ -71,7 +71,7 @@ const _sfc_main = {
     handleSelect(item) {
       if (item.type === "product") {
         common_vendor.index.navigateTo({
-          url: `/pages/detail/detail?id=${item.id}`
+          url: `/pages/son_pages/detail?id=${item.id}`
         });
       } else {
         common_vendor.index.navigateTo({
@@ -93,7 +93,7 @@ const _sfc_main = {
     },
     goToDetail(productId) {
       common_vendor.index.navigateTo({
-        url: "/pages/detail/detail?id=" + productId
+        url: "/pages/son_pages/detail?id=" + productId
       });
     },
     prevBanner() {

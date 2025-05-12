@@ -86,7 +86,7 @@
 			},
 			goToDetail(productId) {
 				uni.navigateTo({
-					url: '/pages/detail/detail?id=' + productId
+					url: '/pages/son_pages/detail?id=' + productId
 				})
 			},
 			// 搜索組件相關

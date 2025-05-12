@@ -14,6 +14,7 @@
 
 <style>
 	/*每个页面公共css */
+	@import "@/static/iconfont/iconfont.css";
 	@font-face {
 		font-family: "iconfont";
 		src: url('static/iconfont/iconfont.woff2') format('woff2'),
@@ -29,6 +30,4 @@
 	  -webkit-font-smoothing: antialiased;
 	  -moz-osx-font-smoothing: grayscale;
 	}
-	
-	@import "@/static/iconfont/iconfont.css";
 </style>

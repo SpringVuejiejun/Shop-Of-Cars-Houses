@@ -56,7 +56,6 @@ const _sfc_main = {
         status: "待付款",
         createTime: (/* @__PURE__ */ new Date()).toISOString()
       };
-      utils_user.userData.updateBalance(-this.selectedSku.price * 1e4);
       utils_user.userData.addOrder(order);
       common_vendor.index.showModal({
         title: "订单",

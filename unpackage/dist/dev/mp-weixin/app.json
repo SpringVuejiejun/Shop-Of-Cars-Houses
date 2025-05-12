@@ -2,16 +2,16 @@
   "pages": [
     "pages/index/index",
     "pages/menu/menu",
+    "pages/games/games",
     "pages/order/order",
     "pages/user/user",
-    "pages/detail/detail",
-    "pages/bargain/bargain",
-    "pages/games/games",
     "pages/user/assets",
-    "pages/address/address",
-    "pages/service/service",
-    "pages/settings/settings",
-    "pages/coupon/coupon"
+    "pages/user/coupon",
+    "pages/user/address",
+    "pages/user/service",
+    "pages/user/settings",
+    "pages/son_pages/detail",
+    "pages/son_pages/bargain"
   ],
   "window": {
     "navigationBarTextStyle": "white",

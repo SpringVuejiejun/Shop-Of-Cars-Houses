@@ -153,7 +153,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     p: common_vendor.o((...args) => $options.handleDefaultChange && $options.handleDefaultChange(...args)),
     q: common_vendor.o((...args) => $options.closePopup && $options.closePopup(...args)),
     r: common_vendor.o((...args) => $options.saveAddress && $options.saveAddress(...args)),
-    s: common_vendor.sr("addressPopup", "20550c7c-0"),
+    s: common_vendor.sr("addressPopup", "71a8071a-0"),
     t: common_vendor.p({
       type: "bottom"
     })

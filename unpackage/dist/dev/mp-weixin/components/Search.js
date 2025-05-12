@@ -99,7 +99,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       };
     }),
     l: common_vendor.o((...args) => $options.closePopup && $options.closePopup(...args)),
-    m: common_vendor.sr("searchPopup", "3456e6d6-0"),
+    m: common_vendor.sr("searchPopup", "5af20fc6-0"),
     n: common_vendor.p({
       type: "center"
     })

@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
+common_vendor.index.clearStorageSync();
 const userData = {
   // 用户信息
   userInfo: {

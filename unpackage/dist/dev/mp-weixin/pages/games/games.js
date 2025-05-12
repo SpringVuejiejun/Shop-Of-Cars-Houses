@@ -266,7 +266,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         c: index
       };
     }),
-    m: common_vendor.sr("rulesPopup", "0a40fb48-0"),
+    m: common_vendor.sr("rulesPopup", "6ffd058d-0"),
     n: common_vendor.p({
       type: "center"
     }),

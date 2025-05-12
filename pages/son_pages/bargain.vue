@@ -181,8 +181,6 @@
 					createTime: new Date().toISOString()
 				}
 				
-				// 更新用户余额
-				userData.updateBalance(-this.selectedSku.price * 10000)
 				// 添加订单
 				userData.addOrder(order)
 				
