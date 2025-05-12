@@ -29,7 +29,7 @@
 					</view>
 					<view class="item-right">
 						<text class="item-amount" :class="{'income': item.type === 'income', 'expense': item.type === 'expense'}">
-							{{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}万
+							{{item.type === 'income' ? '+' : '-'}}¥{{item.amount/10000}}万
 						</text>
 						<text class="item-status">{{item.status}}</text>
 					</view>
@@ -67,30 +67,8 @@
 				this.frozenAmount = userInfo.frozenAmount/10000
 				this.totalAssets = this.balance + this.frozenAmount
 				
-				// 模拟资产明细数据
-				this.assetsList = [
-					{
-						name: '商品购买',
-						time: '2024-05-04 10:30',
-						amount: 198,
-						type: 'expense',
-						status: '已完成'
-					},
-					{
-						name: '充值',
-						time: '2024-05-03 15:20',
-						amount: 1000,
-						type: 'income',
-						status: '已完成'
-					},
-					{
-						name: '砍价退款',
-						time: '2024-05-02 09:15',
-						amount: 50,
-						type: 'income',
-						status: '已完成'
-					}
-				]
+				// 资产明细列表
+				this.assetsList = userData.getAssetsList()
 			},
 			goToRecharge() {
 				uni.showToast({
@@ -213,11 +191,11 @@
 		margin-bottom: 10rpx;
 	}
 	
-	.item-amount.income {
+	.item-amount.expense {
 		color: #52c41a;
 	}
 	
-	.item-amount.expense {
+	.item-amount.income {
 		color: #ff4d4f;
 	}
 	

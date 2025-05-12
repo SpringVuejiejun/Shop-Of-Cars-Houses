@@ -19,29 +19,7 @@ const _sfc_main = {
       this.balance = userInfo.balance / 1e4;
       this.frozenAmount = userInfo.frozenAmount / 1e4;
       this.totalAssets = this.balance + this.frozenAmount;
-      this.assetsList = [
-        {
-          name: "商品购买",
-          time: "2024-05-04 10:30",
-          amount: 198,
-          type: "expense",
-          status: "已完成"
-        },
-        {
-          name: "充值",
-          time: "2024-05-03 15:20",
-          amount: 1e3,
-          type: "income",
-          status: "已完成"
-        },
-        {
-          name: "砍价退款",
-          time: "2024-05-02 09:15",
-          amount: 50,
-          type: "income",
-          status: "已完成"
-        }
-      ];
+      this.assetsList = utils_user.userData.getAssetsList();
     },
     goToRecharge() {
       common_vendor.index.showToast({
@@ -67,7 +45,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         a: common_vendor.t(item.name),
         b: common_vendor.t(item.time),
         c: common_vendor.t(item.type === "income" ? "+" : "-"),
-        d: common_vendor.t(item.amount),
+        d: common_vendor.t(item.amount / 1e4),
         e: item.type === "income" ? 1 : "",
         f: item.type === "expense" ? 1 : "",
         g: common_vendor.t(item.status),

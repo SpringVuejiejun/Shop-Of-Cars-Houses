@@ -105,6 +105,10 @@ const _sfc_main = {
       order.status = "待发货";
       utils_user.userData.updateOrder(order);
       utils_user.userData.updateBalance(-order.price * 1e4);
+      utils_user.userData.addOrderExpense({
+        amount: order.price * 1e4,
+        name: order.productName
+      });
       this.startDeliveryTimer(order);
       common_vendor.index.showToast({
         title: "支付成功",

@@ -220,23 +220,15 @@
 			playSound(type) {
 				console.log(`Playing ${type} sound`)
 			},
-			selectPrize() {
-				const random = Math.random()
-				let sum = 0
-				for (const prize of this.prizes) {
-					sum += prize.probability
-					if (random <= sum) {
-						return prize
-					}
-				}
-				return this.prizes[this.prizes.length - 1]
-			},
 			handlePrizeResult(prize) {
 				let message = ''
 				switch(prize.type) {
 					case 'cash':
 						message = `恭喜您获得现金${prize.value/10000}万！奖金将直接转入您的账户。`
 						userData.updateBalance(prize.value)
+						userData.addGameReward({
+							amount: prize.value
+						})
 						break
 					case 'house':
 						message = `恭喜您获得${prize.name}！我们的客服将尽快与您联系。`

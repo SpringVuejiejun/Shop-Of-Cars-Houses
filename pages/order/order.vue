@@ -171,6 +171,10 @@
 				order.status = '待发货'
 				userData.updateOrder(order)
 				userData.updateBalance(-order.price*10000)
+				userData.addOrderExpense({
+					amount: order.price*10000,
+					name: order.productName
+				})
 				
 				// 啟動發貨定時器
 				this.startDeliveryTimer(order);

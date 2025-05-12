@@ -16,7 +16,9 @@ const userData = {
 		ID: '88888888',
 		phone: '',
 		frozenAmount: 3000000, // 冻结金额
-		addresses: [] // 地址列表
+		addresses: [], // 地址列表
+		assetsList: [], // 资产明细列表
+		lastGameTimesResetDate: null // 游戏次数重置日期
 	},
 
 	// 获取游戏记录
@@ -27,6 +29,7 @@ const userData = {
 
 	// 获得游戏次数
 	getGameTimes(){
+		this.checkAndResetGameTimes(); // 每次获取前检查是否需要重置
 		return this.userInfo.gameTimes
 	},
 	
@@ -197,6 +200,19 @@ const userData = {
 		userInfo.gameTimes = times
 		this.saveUserInfo()
 	},
+
+	// 检查并重置游戏次数
+	checkAndResetGameTimes() {
+		const today = new Date().toDateString();
+		const userInfo = this.getUserInfo();
+		
+		// 如果是新的一天或者从未重置过
+		if (!userInfo.lastGameTimesResetDate || userInfo.lastGameTimesResetDate !== today) {
+			userInfo.gameTimes = 10; // 重置游戏次数
+			userInfo.lastGameTimesResetDate = today;
+			this.saveUserInfo();
+		}
+	},
 	
 	// 添加游戏记录
 	addGameRecord(record) {
@@ -303,7 +319,57 @@ const userData = {
 		
 		this.saveUserInfo()
 		return true
+	},
+
+	// 获取资产明细列表
+	getAssetsList() {
+		const userInfo = this.getUserInfo()
+		return userInfo.assetsList || []
+	},
+
+	// 格式化时间的辅助函数
+	formatDateTime(date) {
+		const year = date.getFullYear()
+		const month = String(date.getMonth() + 1).padStart(2, '0')
+		const day = String(date.getDate()).padStart(2, '0')
+		const hours = String(date.getHours()).padStart(2, '0')
+		const minutes = String(date.getMinutes()).padStart(2, '0')
+		return `${year}-${month}-${day} ${hours}:${minutes}`
+	},
+
+	// 添加资产明细记录
+	addAssetsRecord(record) {
+		const userInfo = this.getUserInfo()
+		if (!userInfo.assetsList) {
+			userInfo.assetsList = []
+		}
+
+		// 添加格式化的时间戳
+		record.time = this.formatDateTime(new Date())
+		// 添加到记录开头
+		userInfo.assetsList.unshift(record)
+
+		this.saveUserInfo()
+	},
+
+	// 订单支付后添加支出记录
+	addOrderExpense(orderInfo) {
+		this.addAssetsRecord({
+			name: orderInfo.name,
+			amount: orderInfo.amount,
+			type: 'expense',
+			status: '已完成'
+		})
+	},
+
+	// 游戏奖励添加收入记录
+	addGameReward(rewardInfo) {
+		this.addAssetsRecord({
+			name: '游戏奖励',
+			amount: rewardInfo.amount,
+			type: 'income',
+			status: '已完成'
+		})
 	}
 }
-
 export default userData 

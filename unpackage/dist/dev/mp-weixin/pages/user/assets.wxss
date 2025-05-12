@@ -85,10 +85,10 @@
 		display: block;
 		margin-bottom: 10rpx;
 }
-.item-amount.income {
+.item-amount.expense {
 		color: #52c41a;
 }
-.item-amount.expense {
+.item-amount.income {
 		color: #ff4d4f;
 }
 .item-status {
